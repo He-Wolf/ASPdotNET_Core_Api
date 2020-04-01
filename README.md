@@ -1,5 +1,5 @@
-# RPi_todoapi
-.NET Core web api with Entity database and Identity authentication
+# Todoapi
+ASP.NET Core web api with Entity database and Identity authentication
 
 # Useful .NET Core commands:
 ## creating the api
@@ -20,7 +20,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design
 ## running the api
 sudo dotnet run --urls "http://*:5000;https://*:5001"
 
-## if running and build fails
+## if running and build fails (Linux)
 sudo rm -rf obj
 
 sudo rm -rf bin
