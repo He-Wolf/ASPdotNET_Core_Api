@@ -17,6 +17,8 @@ dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
 
 dotnet add package Microsoft.EntityFrameworkCore.Design
 
+dotnet add package Microsoft.AspNetCore.Identity
+
 ## running the api
 sudo dotnet run --urls "http://*:5000;https://*:5001"
 
