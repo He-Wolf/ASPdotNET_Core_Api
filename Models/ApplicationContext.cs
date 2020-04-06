@@ -10,10 +10,15 @@ namespace TodoApi.Models
             : base(options)
         {
         }
-
+        public DbSet<TodoItem> TodoItems { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<TodoItem>()
+            .HasOne(t => t.WebApiUser)
+            .WithMany(u => u.TodoItems)
+            .HasForeignKey(t => t.WebApiUserId);
         }
+
     }
 }
