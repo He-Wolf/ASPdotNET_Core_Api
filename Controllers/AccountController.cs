@@ -16,13 +16,13 @@ namespace WebApiJwt.Controllers
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<WebApiUser> _signInManager;
+        private readonly UserManager<WebApiUser> _userManager;
         private readonly IConfiguration _configuration;
 
         public AccountController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<WebApiUser> userManager,
+            SignInManager<WebApiUser> signInManager,
             IConfiguration configuration
             )
         {
@@ -68,7 +68,7 @@ namespace WebApiJwt.Controllers
             throw new ApplicationException("UNKNOWN_ERROR");
         }
         
-        private async Task<object> GenerateJwtToken(string email, IdentityUser user)
+        private async Task<object> GenerateJwtToken(string email, WebApiUser user)
         {
             var claims = new List<Claim>
             {
