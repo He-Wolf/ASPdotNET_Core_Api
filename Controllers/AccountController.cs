@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TodoApi.Models;
 
 namespace WebApiJwt.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
@@ -31,6 +33,7 @@ namespace WebApiJwt.Controllers
             _configuration = configuration;
         }
         
+        [AllowAnonymous]
         [HttpPost]
         public async Task<object> Login([FromBody] LoginDto model)
         {
@@ -44,7 +47,8 @@ namespace WebApiJwt.Controllers
             
             throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
         }
-       
+        
+        [AllowAnonymous]
         [HttpPost]
         public async Task<object> Register([FromBody] RegisterDto model)
         {
