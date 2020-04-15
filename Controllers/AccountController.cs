@@ -47,7 +47,17 @@ namespace WebApiJwt.Controllers
             
             throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
         }
-        
+        /*//works only if cookie based authentication is used
+        [Authorize]
+        [HttpPost]
+        public async Task<object> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            var result = new OkObjectResult(new { message = "You have successfully logged out.", currentDate = DateTime.Now });
+            return result;
+        }
+        */
         [AllowAnonymous]
         [HttpPost]
         public async Task<object> Register([FromBody] RegisterDto model)
