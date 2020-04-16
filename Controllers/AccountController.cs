@@ -15,8 +15,8 @@ using TodoApi.Models;
 namespace WebApiJwt.Controllers
 {
     [Authorize]
-    [Route("[controller]/[action]")]
-    public class AccountController : Controller
+    [Route("[controller]")]
+    public class AccountController : ControllerBase
     {
         private readonly SignInManager<WebApiUser> _signInManager;
         private readonly UserManager<WebApiUser> _userManager;
@@ -35,32 +35,40 @@ namespace WebApiJwt.Controllers
         
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Login([FromBody] LoginDto model)
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
             
             if (result.Succeeded)
             {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                return await GenerateJwtToken(model.Email, appUser);
+                var token = GenerateJwtToken(model.Email, appUser);
+                return new OkObjectResult(new { Token = token, Message = "Successful login" });
             }
             
-            throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
+            return new BadRequestObjectResult(new { Message = "Login failed", currentDate = DateTime.Now });
         }
-        /*//works only if cookie based authentication is used
+        
         [Authorize]
         [HttpPost]
+        [Route("Logout")]
         public async Task<object> Logout()
         {
-            await _signInManager.SignOutAsync();
+            // Well, What do you want to do here?
+            // Wait for token to get expired OR
+            // Maintain token cache and invalidate the tokens after logout method is called
+
+            await _signInManager.SignOutAsync(); //works only if cookie based authentication is used
 
             var result = new OkObjectResult(new { message = "You have successfully logged out.", currentDate = DateTime.Now });
             return result;
         }
-        */
+        
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Register([FromBody] RegisterDto model)
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             if (ModelState.IsValid)
             {
@@ -76,13 +84,15 @@ namespace WebApiJwt.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
-                    return await GenerateJwtToken(model.Email, user);
+                    var token = GenerateJwtToken(model.Email, user);
+                    return new OkObjectResult(new { Token = token, Message = "Successful registration" });
                 }
             }
-            throw new ApplicationException("UNKNOWN_ERROR");
+
+            return new BadRequestObjectResult(new { Message = "Registration failed", currentDate = DateTime.Now });
         }
         
-        private async Task<object> GenerateJwtToken(string email, WebApiUser user)
+        private object GenerateJwtToken(string email, WebApiUser user)
         {
             var claims = new List<Claim>
             {
