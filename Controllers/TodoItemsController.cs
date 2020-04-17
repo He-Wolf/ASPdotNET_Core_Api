@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Data;
 using TodoApi.Models;
 
 namespace web_api.Controllers
@@ -15,17 +19,29 @@ namespace web_api.Controllers
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
+        private readonly UserManager<WebApiUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger _logger;
 
-        public TodoItemsController(ApplicationDbContext context)
+        public TodoItemsController(
+            UserManager<WebApiUser> userManager,
+            ApplicationDbContext context,
+            ILogger<TodoItemsController> logger)
         {
+            _userManager = userManager;
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/TodoItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            _logger.LogInformation("Current user: {currentUserId}", currentUserId);
+            _logger.LogInformation("Current user: {currentUser.id}", currentUser.Id);
+
             return await _context.TodoItems.ToListAsync();
         }
 

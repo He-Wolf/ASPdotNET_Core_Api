@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using TodoApi.Models;
 
-
-namespace TodoApi.Models
+namespace TodoApi.Data
 {
     public class ApplicationDbContext : IdentityDbContext<WebApiUser>
     {
@@ -17,7 +17,8 @@ namespace TodoApi.Models
             builder.Entity<TodoItem>()
             .HasOne(t => t.WebApiUser)
             .WithMany(u => u.TodoItems)
-            .HasForeignKey(t => t.WebApiUserId);
+            .HasForeignKey(t => t.WebApiUserId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

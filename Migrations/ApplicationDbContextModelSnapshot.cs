@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TodoApi.Models;
+using TodoApi.Data;
 
 namespace web_api.Migrations
 {
@@ -291,7 +291,8 @@ namespace web_api.Migrations
                 {
                     b.HasOne("TodoApi.Models.WebApiUser", "WebApiUser")
                         .WithMany("TodoItems")
-                        .HasForeignKey("WebApiUserId");
+                        .HasForeignKey("WebApiUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

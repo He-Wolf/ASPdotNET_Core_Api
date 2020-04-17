@@ -5,7 +5,7 @@ ASP.NET Core web api with Entity database and Identity authentication
 ## creating the api
 dotnet new webapi
 
-dotnet tool install --global dotnet-ef
+dotnet tool install --global dotnet-ef / dotnet tool update --global dotnet-ef
 
 dotnet tool install --global dotnet-aspnet-codegenerator
 
@@ -18,6 +18,8 @@ dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
 dotnet add package Microsoft.EntityFrameworkCore.Design
 
 dotnet add package Microsoft.AspNetCore.Identity
+
+dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson
 
 ## running the api
 sudo dotnet run --urls "http://*:5000;https://*:5001"

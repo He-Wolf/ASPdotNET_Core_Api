@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TodoApi.Models;
+using TodoApi.Data;
 
 namespace web_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200406142730_InitialCreate")]
+    [Migration("20200417112733_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,7 +293,8 @@ namespace web_api.Migrations
                 {
                     b.HasOne("TodoApi.Models.WebApiUser", "WebApiUser")
                         .WithMany("TodoItems")
-                        .HasForeignKey("WebApiUserId");
+                        .HasForeignKey("WebApiUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

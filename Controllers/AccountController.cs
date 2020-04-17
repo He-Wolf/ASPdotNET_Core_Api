@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using TodoApi.Models;
 
@@ -21,16 +22,18 @@ namespace WebApiJwt.Controllers
         private readonly SignInManager<WebApiUser> _signInManager;
         private readonly UserManager<WebApiUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
         public AccountController(
             UserManager<WebApiUser> userManager,
             SignInManager<WebApiUser> signInManager,
-            IConfiguration configuration
-            )
+            IConfiguration configuration,
+            ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _logger = logger;
         }
         
         [AllowAnonymous]
@@ -96,11 +99,10 @@ namespace WebApiJwt.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-
+            _logger.LogInformation("user.id: {user.id}", user.Id);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
