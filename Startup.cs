@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TodoApi.Data;
 using TodoApi.Models;
+using AutoMapper;
 
 namespace web_api
 {
@@ -76,6 +77,7 @@ namespace web_api
                     };
                 });
             services.AddHttpContextAccessor();
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );

@@ -21,6 +21,8 @@ dotnet add package Microsoft.AspNetCore.Identity
 
 dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson
 
+dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
+
 ## running the api
 sudo dotnet run --urls "http://*:5000;https://*:5001"
 

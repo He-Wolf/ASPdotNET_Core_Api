@@ -38,21 +38,32 @@ namespace web_api.Controllers
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
             //_logger.LogInformation("Current user: {currentUserId}", CurrentUserId);
             //_logger.LogInformation("Current user: {currentUser.id}", CurrentUser.Id);
 
+            return CurrentUser.TodoItems.ToList();
+
+            /*var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
             return await _context.Entry(CurrentUser)
                                  .Collection(u => u.TodoItems)
                                  .Query()
-                                 .ToListAsync();
+                                 .ToListAsync();*/
         }
 
         // GET: api/TodoItems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+
+            var todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
 
             if (todoItem == null)
             {
@@ -68,28 +79,24 @@ namespace web_api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
         {
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+
             if (id != todoItem.Id)
             {
                 return BadRequest();
             }
 
+            if (CurrentUser.TodoItems.Single(t => t.Id == id) == null)
+            {
+                return NotFound();
+            }
+            
             _context.Entry(todoItem).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -101,7 +108,6 @@ namespace web_api.Controllers
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
 
             //with Identity usermanager
             var CurrentUser = await _userManager.Users
@@ -125,21 +131,24 @@ namespace web_api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+
+            var todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
+
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
+            CurrentUser.TodoItems.Remove(todoItem);
+
+            await _userManager.UpdateAsync(CurrentUser);
 
             return todoItem;
-        }
-
-        private bool TodoItemExists(long id)
-        {
-            return _context.TodoItems.Any(e => e.Id == id);
         }
     }
 }
