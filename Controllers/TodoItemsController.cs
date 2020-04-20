@@ -37,12 +37,15 @@ namespace web_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
-            _logger.LogInformation("Current user: {currentUserId}", currentUserId);
-            _logger.LogInformation("Current user: {currentUser.id}", currentUser.Id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
+            //_logger.LogInformation("Current user: {currentUserId}", CurrentUserId);
+            //_logger.LogInformation("Current user: {currentUser.id}", CurrentUser.Id);
 
-            return await _context.TodoItems.ToListAsync();
+            return await _context.Entry(CurrentUser)
+                                 .Collection(u => u.TodoItems)
+                                 .Query()
+                                 .ToListAsync();
         }
 
         // GET: api/TodoItems/5
@@ -97,8 +100,23 @@ namespace web_api.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+
+            //with Identity usermanager
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+            CurrentUser.TodoItems.Add(todoItem);
+            await _userManager.UpdateAsync(CurrentUser);
+            
+            //with Entity context
+            /*var CurrentUser = await _context.Users
+                                              .Include(u => u.TodoItems)
+                                              .SingleAsync(u => u.Id == CurrentUserId);
+
+            CurrentUser.TodoItems.Add(todoItem);
+            await _context.SaveChangesAsync();*/
 
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
