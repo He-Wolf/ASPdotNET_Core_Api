@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TodoApi.Models
 {
-    public class LoginDto
+    public class LoginViewModel
     {
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress]

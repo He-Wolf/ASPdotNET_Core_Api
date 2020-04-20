@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Data;
 using TodoApi.Models;
+using AutoMapper;
 
 namespace web_api.Controllers
 {
@@ -21,21 +22,24 @@ namespace web_api.Controllers
     {
         private readonly UserManager<WebApiUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         public TodoItemsController(
             UserManager<WebApiUser> userManager,
             ApplicationDbContext context,
+            IMapper mapper,
             ILogger<TodoItemsController> logger)
         {
             _userManager = userManager;
             _context = context;
+            _mapper = mapper;
             _logger = logger;
         }
 
         // GET: api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<TodoViewModel>>> GetTodoItems()
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var CurrentUser = await _userManager.Users
@@ -43,8 +47,11 @@ namespace web_api.Controllers
                                                 .SingleAsync(u => u.Id == CurrentUserId);
             //_logger.LogInformation("Current user: {currentUserId}", CurrentUserId);
             //_logger.LogInformation("Current user: {currentUser.id}", CurrentUser.Id);
+            
+            List<TodoItem> todoItems = CurrentUser.TodoItems.ToList();
+            List<TodoViewModel> todoItemsVM = _mapper.Map<List<TodoItem>, List<TodoViewModel>>(todoItems);
 
-            return CurrentUser.TodoItems.ToList();
+            return todoItemsVM;
 
             /*var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
             return await _context.Entry(CurrentUser)
@@ -55,7 +62,7 @@ namespace web_api.Controllers
 
         // GET: api/TodoItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
+        public async Task<ActionResult<TodoViewModel>> GetTodoItem(long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -70,14 +77,14 @@ namespace web_api.Controllers
                 return NotFound();
             }
 
-            return todoItem;
+            return _mapper.Map<TodoViewModel>(todoItem);
         }
 
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
+        public async Task<IActionResult> PutTodoItem(long id, TodoViewModel todoItemVM)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -85,16 +92,21 @@ namespace web_api.Controllers
                                                 .Include(u => u.TodoItems)
                                                 .SingleAsync(u => u.Id == CurrentUserId);
 
-            if (id != todoItem.Id)
+            if (id != todoItemVM.Id)
             {
                 return BadRequest();
             }
 
-            if (CurrentUser.TodoItems.Single(t => t.Id == id) == null)
+            TodoItem todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
+
+            if (todoItem == null)
             {
                 return NotFound();
             }
             
+            todoItem.Name = todoItemVM.Name;
+            todoItem.IsComplete = todoItemVM.IsComplete;
+
             _context.Entry(todoItem).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
@@ -105,7 +117,7 @@ namespace web_api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
+        public async Task<ActionResult<TodoViewModel>> PostTodoItem(TodoViewModel todoItemVM)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -113,6 +125,9 @@ namespace web_api.Controllers
             var CurrentUser = await _userManager.Users
                                                 .Include(u => u.TodoItems)
                                                 .SingleAsync(u => u.Id == CurrentUserId);
+            
+            TodoItem todoItem = _mapper.Map<TodoItem>(todoItemVM);
+
             CurrentUser.TodoItems.Add(todoItem);
             await _userManager.UpdateAsync(CurrentUser);
             
@@ -124,12 +139,12 @@ namespace web_api.Controllers
             CurrentUser.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync();*/
 
-            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, _mapper.Map<TodoViewModel>(todoItem));
         }
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)
+        public async Task<ActionResult<TodoViewModel>> DeleteTodoItem(long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -148,7 +163,7 @@ namespace web_api.Controllers
 
             await _userManager.UpdateAsync(CurrentUser);
 
-            return todoItem;
+            return _mapper.Map<TodoViewModel>(todoItem);
         }
     }
 }

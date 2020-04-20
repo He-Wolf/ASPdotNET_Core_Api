@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TodoApi.Models
 {
-    public class RegisterDto
+    public class RegisterViewModel
     {
         [Required(ErrorMessage = "Your firstname is required")]
         [StringLength(50, ErrorMessage = "Must be between 2 and 50 characters", MinimumLength = 2)]
