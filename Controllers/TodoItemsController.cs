@@ -48,10 +48,9 @@ namespace web_api.Controllers
             //_logger.LogInformation("Current user: {currentUserId}", CurrentUserId);
             //_logger.LogInformation("Current user: {currentUser.id}", CurrentUser.Id);
             
-            List<TodoItem> todoItems = CurrentUser.TodoItems.ToList();
-            List<TodoViewModel> todoItemsVM = _mapper.Map<List<TodoItem>, List<TodoViewModel>>(todoItems);
+            var todoItems = CurrentUser.TodoItems.ToList();
 
-            return todoItemsVM;
+            return Ok(_mapper.Map<List<TodoItem>, List<TodoViewModel>>(todoItems));
 
             /*var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
             return await _context.Entry(CurrentUser)
@@ -77,7 +76,7 @@ namespace web_api.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<TodoViewModel>(todoItem);
+            return Ok(_mapper.Map<TodoViewModel>(todoItem));
         }
 
         // PUT: api/TodoItems/5
@@ -110,7 +109,7 @@ namespace web_api.Controllers
             _context.Entry(todoItem).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(_mapper.Map<TodoViewModel>(todoItem));
         }
 
         // POST: api/TodoItems
@@ -144,7 +143,7 @@ namespace web_api.Controllers
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TodoViewModel>> DeleteTodoItem(long id)
+        public async Task<IActionResult> DeleteTodoItem(long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -160,10 +159,9 @@ namespace web_api.Controllers
             }
 
             CurrentUser.TodoItems.Remove(todoItem);
-
             await _userManager.UpdateAsync(CurrentUser);
 
-            return _mapper.Map<TodoViewModel>(todoItem);
+            return Ok();
         }
     }
 }
