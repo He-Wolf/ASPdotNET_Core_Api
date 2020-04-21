@@ -68,10 +68,11 @@ namespace web_api
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
                         ValidIssuer = Configuration["Jwt:Issuer"],
                         ValidAudience = Configuration["Jwt:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                        ValidateLifetime = true,
+                        RequireExpirationTime = true,
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                         //ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                     };
