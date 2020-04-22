@@ -23,6 +23,9 @@ dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson
 
 dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
 
+dotnet add package Swashbuckle.AspNetCore
+
+dotnet add package Swashbuckle.AspNetCore.Newtonsoft
 ## running the api
 sudo dotnet run --urls "http://*:5000;https://*:5001"
 
