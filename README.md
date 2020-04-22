@@ -1,5 +1,5 @@
 # Todoapi
-ASP.NET Core web api with Entity database and Identity authentication
+ASP.NET Core web api with Entity Core ORM & SQLite database and Identity Core/JWT authentication
 
 # Useful .NET Core commands:
 ## creating the api
