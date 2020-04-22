@@ -59,9 +59,9 @@ namespace web_api.Controllers
                                  .ToListAsync();*/
         }
 
-        // GET: api/TodoItems/5
+        // GET: api/TodoItem/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoViewModel>> GetTodoItem(long id)
+        public async Task<ActionResult<TodoViewModel>> GetTodoItem([FromRoute] long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -83,7 +83,7 @@ namespace web_api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoViewModel todoItemVM)
+        public async Task<IActionResult> PutTodoItem([FromRoute] long id, [FromBody] TodoViewModel todoItemVM)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -116,7 +116,7 @@ namespace web_api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<TodoViewModel>> PostTodoItem(TodoViewModel todoItemVM)
+        public async Task<ActionResult<TodoViewModel>> PostTodoItem([FromBody] TodoViewModel todoItemVM)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -143,7 +143,7 @@ namespace web_api.Controllers
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> DeleteTodoItem([FromRoute] long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using TodoApi.Data;
 using TodoApi.Models;
 using AutoMapper;
@@ -82,6 +85,19 @@ namespace web_api
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo{
+                                        Title = "ToDo web API",
+                                        Version = "v1",
+                                        Description = "This is an ASP.NET Core web api with EF Core ORM/SQLite DB and Indetity Core/JWT authentication",
+                                        Contact = new OpenApiContact
+                                        {
+                                            Name = "Laszlo Cegledi",
+                                            Email = "cegledi.laszlo@hotmail.com",
+                                        }});
+            });
+            services.AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +107,14 @@ namespace web_api
             {
                 app.UseDeveloperExceptionPage();
             }
-        
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Todo web API V1");
+            });
+
             app.UseDefaultFiles();
 
             app.UseStaticFiles();
