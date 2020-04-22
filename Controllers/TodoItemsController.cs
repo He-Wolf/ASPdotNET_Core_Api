@@ -2,108 +2,166 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Data;
 using TodoApi.Models;
+using AutoMapper;
 
 namespace web_api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly UserManager<WebApiUser> _userManager;
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public TodoItemsController(TodoContext context)
+        public TodoItemsController(
+            UserManager<WebApiUser> userManager,
+            ApplicationDbContext context,
+            IMapper mapper,
+            ILogger<TodoItemsController> logger)
         {
+            _userManager = userManager;
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         // GET: api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<TodoViewModel>>> GetTodoItems()
         {
-            return await _context.TodoItems.ToListAsync();
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+            //_logger.LogInformation("Current user: {currentUserId}", CurrentUserId);
+            //_logger.LogInformation("Current user: {currentUser.id}", CurrentUser.Id);
+            
+            var todoItems = CurrentUser.TodoItems.ToList();
+
+            return Ok(_mapper.Map<List<TodoItem>, List<TodoViewModel>>(todoItems));
+
+            /*var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
+            return await _context.Entry(CurrentUser)
+                                 .Collection(u => u.TodoItems)
+                                 .Query()
+                                 .ToListAsync();*/
         }
 
         // GET: api/TodoItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
+        public async Task<ActionResult<TodoViewModel>> GetTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+
+            var todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
 
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            return todoItem;
+            return Ok(_mapper.Map<TodoViewModel>(todoItem));
         }
 
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
+        public async Task<IActionResult> PutTodoItem(long id, TodoViewModel todoItemVM)
         {
-            if (id != todoItem.Id)
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+
+            if (id != todoItemVM.Id)
             {
                 return BadRequest();
             }
 
+            TodoItem todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
+
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+            
+            todoItem.Name = todoItemVM.Name;
+            todoItem.IsComplete = todoItemVM.IsComplete;
+
             _context.Entry(todoItem).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(_mapper.Map<TodoViewModel>(todoItem));
         }
 
         // POST: api/TodoItems
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
+        public async Task<ActionResult<TodoViewModel>> PostTodoItem(TodoViewModel todoItemVM)
         {
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            //with Identity usermanager
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+            
+            TodoItem todoItem = _mapper.Map<TodoItem>(todoItemVM);
+
+            CurrentUser.TodoItems.Add(todoItem);
+            await _userManager.UpdateAsync(CurrentUser);
+            
+            //with Entity context
+            /*var CurrentUser = await _context.Users
+                                              .Include(u => u.TodoItems)
+                                              .SingleAsync(u => u.Id == CurrentUserId);
+
+            CurrentUser.TodoItems.Add(todoItem);
+            await _context.SaveChangesAsync();*/
+
+            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, _mapper.Map<TodoViewModel>(todoItem));
         }
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)
+        public async Task<IActionResult> DeleteTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentUser = await _userManager.Users
+                                                .Include(u => u.TodoItems)
+                                                .SingleAsync(u => u.Id == CurrentUserId);
+
+            var todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
+
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
+            CurrentUser.TodoItems.Remove(todoItem);
+            await _userManager.UpdateAsync(CurrentUser);
 
-            return todoItem;
-        }
-
-        private bool TodoItemExists(long id)
-        {
-            return _context.TodoItems.Any(e => e.Id == id);
+            return Ok();
         }
     }
 }
