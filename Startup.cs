@@ -53,7 +53,10 @@ namespace web_api
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-                
+            
+            
+            services.AddCors();
+
             services
                 .AddAuthentication(options =>
                 {
@@ -80,23 +83,58 @@ namespace web_api
                         //ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                     };
                 });
-            services.AddHttpContextAccessor();
+
             services.AddAutoMapper(typeof(Startup));
+
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo{
-                                        Title = "ToDo web API",
-                                        Version = "v1",
-                                        Description = "This is an ASP.NET Core web api with EF Core ORM/SQLite DB and Indetity Core/JWT authentication",
-                                        Contact = new OpenApiContact
-                                        {
-                                            Name = "Laszlo Cegledi",
-                                            Email = "cegledi.laszlo@hotmail.com",
-                                        }});
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Title = "ToDo web API",
+                        Version = "v1",
+                        Description = "This is an ASP.NET Core web api with EF Core ORM/SQLite DB and Indetity Core/JWT authentication",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Laszlo Cegledi",
+                            Email = "cegledi.laszlo@hotmail.com",
+                        }
+                    });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference 
+                                { 
+                                    Type = ReferenceType.SecurityScheme, 
+                                    Id = "Bearer" 
+                                }
+                            },
+                            new string[] {}
+
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+
             services.AddSwaggerGenNewtonsoftSupport();
         }
 
@@ -108,20 +146,25 @@ namespace web_api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDefaultFiles();
+
+            app.UseStaticFiles();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Todo web API V1");
             });
-
-            app.UseDefaultFiles();
-
-            app.UseStaticFiles();
             
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseCors(x => x
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
 
             app.UseAuthentication();
 

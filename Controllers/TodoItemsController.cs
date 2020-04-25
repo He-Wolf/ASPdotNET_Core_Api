@@ -16,6 +16,7 @@ using AutoMapper;
 namespace web_api.Controllers
 {
     [Authorize]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class TodoItemsController : ControllerBase
@@ -39,7 +40,9 @@ namespace web_api.Controllers
 
         // GET: api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoViewModel>>> GetTodoItems()
+        [ProducesResponseType(typeof(IEnumerable<TodoViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTodoItems()
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var CurrentUser = await _userManager.Users
@@ -49,7 +52,10 @@ namespace web_api.Controllers
             //_logger.LogInformation("Current user: {currentUser.id}", CurrentUser.Id);
             
             var todoItems = CurrentUser.TodoItems.ToList();
-
+            if(todoItems == null)
+            {
+                return NotFound(new MessageViewModel("ToDo items not found.", DateTime.Now));
+            }
             return Ok(_mapper.Map<List<TodoItem>, List<TodoViewModel>>(todoItems));
 
             /*var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
@@ -61,7 +67,9 @@ namespace web_api.Controllers
 
         // GET: api/TodoItem/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoViewModel>> GetTodoItem([FromRoute] long id)
+        [ProducesResponseType(typeof(TodoViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTodoItem([FromRoute] long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -73,7 +81,7 @@ namespace web_api.Controllers
 
             if (todoItem == null)
             {
-                return NotFound();
+                return NotFound(new MessageViewModel("ToDo item not found.", DateTime.Now));
             }
 
             return Ok(_mapper.Map<TodoViewModel>(todoItem));
@@ -83,6 +91,9 @@ namespace web_api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(TodoViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutTodoItem([FromRoute] long id, [FromBody] TodoViewModel todoItemVM)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -93,14 +104,14 @@ namespace web_api.Controllers
 
             if (id != todoItemVM.Id)
             {
-                return BadRequest();
+                return BadRequest(new MessageViewModel("ToDo item not valid.", DateTime.Now));;
             }
 
             TodoItem todoItem = CurrentUser.TodoItems.Single(t => t.Id == id);
 
             if (todoItem == null)
             {
-                return NotFound();
+                return NotFound(new MessageViewModel("ToDo item not found.", DateTime.Now));;
             }
             
             todoItem.Name = todoItemVM.Name;
@@ -116,7 +127,8 @@ namespace web_api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<TodoViewModel>> PostTodoItem([FromBody] TodoViewModel todoItemVM)
+        [ProducesResponseType(typeof(TodoViewModel), StatusCodes.Status201Created)]
+        public async Task<IActionResult> PostTodoItem([FromBody] TodoViewModel todoItemVM)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -143,6 +155,8 @@ namespace web_api.Controllers
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteTodoItem([FromRoute] long id)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -155,13 +169,13 @@ namespace web_api.Controllers
 
             if (todoItem == null)
             {
-                return NotFound();
+                return NotFound(new MessageViewModel("ToDo item not found.", DateTime.Now));
             }
 
             CurrentUser.TodoItems.Remove(todoItem);
             await _userManager.UpdateAsync(CurrentUser);
 
-            return Ok();
+            return Ok(new MessageViewModel("ToDo item deleted successfully.", DateTime.Now));
         }
     }
 }

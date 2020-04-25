@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,7 +18,9 @@ using AutoMapper;
 namespace WebApiJwt.Controllers
 {
     [Authorize]
+    [Produces("application/json")]
     [Route("[controller]")]
+    [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly SignInManager<WebApiUser> _signInManager;
@@ -42,6 +45,8 @@ namespace WebApiJwt.Controllers
         
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
@@ -51,14 +56,16 @@ namespace WebApiJwt.Controllers
             {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
                 var token = GenerateJwtToken(appUser);
-                return new OkObjectResult(new { Token = token, Message = "Successful login" });
+
+                return Ok(new TokenViewModel(token, "Successful login", DateTime.Now));
             }
             
-            return new BadRequestObjectResult(new { Message = "Login failed", currentDate = DateTime.Now });
+            return BadRequest(new MessageViewModel("Login failed", DateTime.Now));
         }
         
         [Authorize]
         [HttpPost]
+        [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
@@ -68,11 +75,13 @@ namespace WebApiJwt.Controllers
 
             await _signInManager.SignOutAsync(); //works only if cookie based authentication is used
 
-            return new OkObjectResult(new { message = "You have successfully logged out.", currentDate = DateTime.Now });
+            return Ok(new MessageViewModel("Successful logout.", DateTime.Now));
         }
         
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
@@ -91,17 +100,20 @@ namespace WebApiJwt.Controllers
                 {
                     await _signInManager.SignInAsync(user, false);
                     var token = GenerateJwtToken(user);
-                    return new OkObjectResult(new { Token = token, Message = "Successful registration" });
+                    
+                    return Ok(new TokenViewModel(token, "Successful registration", DateTime.Now));
                 }
             }
-
-            return new BadRequestObjectResult(new { Message = "Registration failed", currentDate = DateTime.Now });
+            
+            return BadRequest(new MessageViewModel("Registration failed.", DateTime.Now));
         }
         
         [Authorize]
         [HttpPut]
+        [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
         [Route("Edit")]
-        public async Task<ActionResult<DisplayViewModel>> Edit([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Edit([FromBody] RegisterViewModel model)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
@@ -116,15 +128,16 @@ namespace WebApiJwt.Controllers
 
                 await _userManager.UpdateAsync(CurrentUser);
 
-                return CreatedAtAction("Display", _mapper.Map<DisplayViewModel>(CurrentUser));
+                return CreatedAtRoute("Display", _mapper.Map<DisplayViewModel>(CurrentUser));
             }
-            return BadRequest();
+            return BadRequest(new MessageViewModel("Edit failed.", DateTime.Now));
         }
 
         [Authorize]
         [HttpGet]
+        [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
         [Route("Display")]
-        public async Task<ActionResult<DisplayViewModel>> Display()
+        public async Task<IActionResult> Display()
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
@@ -134,6 +147,7 @@ namespace WebApiJwt.Controllers
 
         [Authorize]
         [HttpDelete]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
         [Route("Delete")]
         public async Task<IActionResult> Delete()
         {
@@ -142,10 +156,10 @@ namespace WebApiJwt.Controllers
 
             await _userManager.DeleteAsync(CurrentUser);
 
-            return new OkObjectResult(new { message = "You have deleted you account successfully.", currentDate = DateTime.Now });
+            return Ok(new MessageViewModel("Your account deleted successfully.", DateTime.Now));
         }
         
-        private object GenerateJwtToken(WebApiUser user)
+        private string GenerateJwtToken(WebApiUser user)
         {
             var claims = new List<Claim>
             {
