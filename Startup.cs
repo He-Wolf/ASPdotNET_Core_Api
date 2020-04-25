@@ -157,7 +157,8 @@ namespace web_api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Todo web API V1");
             });
             
-            app.UseHttpsRedirection();
+            //hard to find universal way to https on every OS (docker)
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             
