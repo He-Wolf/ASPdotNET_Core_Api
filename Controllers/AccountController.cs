@@ -65,7 +65,7 @@ namespace WebApiJwt.Controllers
         
         [Authorize]
         [HttpPost]
-        [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
