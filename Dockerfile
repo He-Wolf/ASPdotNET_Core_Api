@@ -24,3 +24,11 @@ ENTRYPOINT ["dotnet", "web_api.dll"]
 
 #docker build -t todowebapi:v1 .
 #docker run -it --rm -p 5000:5000 todowebapi:v1
+
+#If you use Windows Docker, dotnet restore might not work because of network issues.
+#Docker for Windows uses the network adapter with the lowest Interface metric value.
+#When this adapter is disconnected, your container cannot connect to the internet.
+#To see if this is your problem as well:
+#Get-NetIPInterface -AddressFamily IPv4 | Sort-Object -Property InterfaceMetric -Descending
+#If yes, set your connected active connection to the lowest value:
+#Set-NetIPInterface -InterfaceAlias 'Wi-Fi' -InterfaceMetric 20
