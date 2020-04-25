@@ -95,8 +95,8 @@ namespace web_api
             app.UseDefaultFiles();
 
             app.UseStaticFiles();
-            
-            app.UseHttpsRedirection();
+            //hard to find universal way to https on every OS (docker)
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
