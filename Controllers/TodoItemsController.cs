@@ -38,7 +38,24 @@ namespace web_api.Controllers
             _logger = logger;
         }
 
-        // GET: api/TodoItems
+        /// <summary>
+        /// Lists all the todo items which was added to the current user.
+        /// JWT needed in request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: GET
+        ///     route:  api/TodoItems
+        ///     body:   none
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param></param>
+        /// <returns>List of todo items beloning to the current user.</returns>
+        /// <response code="200">Displays all the todo items belonging to the currently logged-in user.</response>
+        /// <response code="404">Returns a message if currently logged-in user does not have todo items.</response>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<TodoViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
@@ -65,7 +82,24 @@ namespace web_api.Controllers
                                  .ToListAsync();*/
         }
 
-        // GET: api/TodoItem/5
+        /// <summary>
+        /// Displays the todo item of the current user whose item id was added to request path.
+        /// JWT needed in request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: GET
+        ///     route:  api/TodoItems/5
+        ///     body:   none
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param name="id">Item ID of the requested todo item.</param>
+        /// <returns>Todo item with the requested id beloning to the current user.</returns>
+        /// <response code="200">Displays todo item of the current user.</response>
+        /// <response code="404">Returns a message if currently logged-in user does not have the todo item.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TodoViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
@@ -87,9 +121,30 @@ namespace web_api.Controllers
             return Ok(_mapper.Map<TodoViewModel>(todoItem));
         }
 
-        // PUT: api/TodoItems/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Modifies the todo item of the current user whose item id was added to request path with the data given in the request body.
+        /// JWT needed in request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: PUT
+        ///     route:  api/TodoItems/5
+        ///     body:   {
+        ///             "id": 5,
+        ///             "name": "Eat a sandwich",
+        ///             "isComplete": true
+        ///             }
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param name="id">Item ID of the requested todo item.</param>
+        /// <param name="todoItemVM">Modified data of the requested todo item.</param>
+        /// <returns>Modified data of the todo item with the requested id beloning to the current user.</returns>
+        /// <response code="200">Displays modified todo item of the current user.</response>
+        /// <response code="404">Returns a message if the item id given in the body and in the path are not identical.</response>
+        /// <response code="400">Returns a message if currently logged-in user does not have todo item with the requested id.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(TodoViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]
@@ -123,9 +178,26 @@ namespace web_api.Controllers
             return Ok(_mapper.Map<TodoViewModel>(todoItem));
         }
 
-        // POST: api/TodoItems
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Creates a new todo item for the current user with the data given in the request body.
+        /// JWT needed in request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: POST
+        ///     route:  api/TodoItems
+        ///     body:   {
+        ///             "name": "Eat a sandwich",
+        ///             "isComplete": true
+        ///             }
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param name="todoItemVM">Data of the requested todo item.</param>
+        /// <returns>Data of the todo item created for the current user.</returns>
+        /// <response code="201">Displays new todo item of the current user.</response>
         [HttpPost]
         [ProducesResponseType(typeof(TodoViewModel), StatusCodes.Status201Created)]
         public async Task<IActionResult> PostTodoItem([FromBody] TodoViewModel todoItemVM)
@@ -153,7 +225,24 @@ namespace web_api.Controllers
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, _mapper.Map<TodoViewModel>(todoItem));
         }
 
-        // DELETE: api/TodoItems/5
+        /// <summary>
+        /// Deletes the todo item of the current user whose item id was added to request path.
+        /// JWT needed in request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: DELETE
+        ///     route:  api/TodoItems/5
+        ///     body:   none
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param name="id">Item ID of the requested todo item.</param>
+        /// <returns>Message whether the deletion was successful.</returns>
+        /// <response code="200">Message about the successful deletion.</response>
+        /// <response code="404">Message about the unsuccessful deletion if item cannot be found.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status404NotFound)]

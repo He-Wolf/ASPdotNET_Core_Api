@@ -42,7 +42,25 @@ namespace WebApiJwt.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-        
+
+        /// <summary>
+        /// Logs in registered user.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: POST
+        ///     route:  /Account/Login
+        ///     body:   {
+        ///             "Email": "john.smith@email.com",
+        ///             "Password": "SomeSecurePassword123!"
+        ///             }
+        ///     additional header: none
+        /// </remarks>
+        /// <param name="model"> User email and password.</param>
+        /// <returns>A JWT for authorization.</returns>
+        /// <response code="200">Returns the newly created JSON web token.</response>
+        /// <response code="400">Message if login failed.</response>
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
@@ -62,7 +80,24 @@ namespace WebApiJwt.Controllers
             
             return BadRequest(new MessageViewModel("Login failed", DateTime.Now));
         }
-        
+
+        /// <summary>
+        /// Logs out registered, logged in user. Here we can wait for the token to expire or
+        /// delete the token from the browser on the client side.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: POST
+        ///     route:  /Account/Logout
+        ///     body:   none
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param></param>
+        /// <returns>Message if logout was succesful.</returns>
+        /// <response code="200">Returns the message about logout.</response>
         [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
@@ -78,6 +113,28 @@ namespace WebApiJwt.Controllers
             return Ok(new MessageViewModel("Successful logout.", DateTime.Now));
         }
         
+        /// <summary>
+        /// Registers a new user with the given user data. After successful registration, JWT is returned.
+        /// Password needs upper and lower case letters, at least a digit and a special character as well.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: POST
+        ///     route:  /Account/Register
+        ///     body:   {
+	    ///             "FirstName": "John",
+	    ///             "LastName": "Smith",
+	    ///             "Email": "john.smith@email.com",
+        ///             "Password": "SomeSecurePassword123!",
+        ///             "ConfirmPassword": "SomeSecurePassword123!"
+        ///             }
+        ///     additional header: none
+        /// </remarks>
+        /// <param name="model"> User firstname, lastname, email and password (with confirmation).</param>
+        /// <returns>JSON web token if registration was successful.</returns>
+        /// <response code="200">Returns JWT after registration.</response>
+        /// <response code="400">Returns a message if registration data do not fit the requirements.</response>
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
@@ -107,10 +164,33 @@ namespace WebApiJwt.Controllers
             
             return BadRequest(new MessageViewModel("Registration failed.", DateTime.Now));
         }
-        
+
+        /// <summary>
+        /// You can edit the user data of registered, logged in user account. JWT needed in the request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: PUT
+        ///     route:  /Account/Edit
+        ///     body:   {
+	    ///             "FirstName": "Jonathan",
+	    ///             "LastName": "Smith",
+	    ///             "Email": "jonathan.smith@email.com",
+        ///             "Password": "SomeSecurePassword123.",
+        ///             "ConfirmPassword": "SomeSecurePassword123."
+        ///             }
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param name="model"> User firstname, lastname, email and password (with confirmation).</param>
+        /// <returns>New, modified user data of the logged-in user.</returns>
+        /// <response code="201">User data after successful modification.</response>
+        /// <response code="400">Returns a message if user data modification was not successful.</response>
         [Authorize]
         [HttpPut]
-        [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
         [Route("Edit")]
         public async Task<IActionResult> Edit([FromBody] RegisterViewModel model)
@@ -133,6 +213,22 @@ namespace WebApiJwt.Controllers
             return BadRequest(new MessageViewModel("Edit failed.", DateTime.Now));
         }
 
+        /// <summary>
+        /// You can display the logged in user data. JWT needed in the request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: GET
+        ///     route:  /Account/Display
+        ///     body:   none
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param></param>
+        /// <returns>Logged in user data.</returns>
+        /// <response code="200">Logged-in user data.</response>
         [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
@@ -145,6 +241,22 @@ namespace WebApiJwt.Controllers
             return Ok(_mapper.Map<DisplayViewModel>(CurrentUser));
         }
 
+        /// <summary>
+        /// You can delete your user account. All the ToDo items of the user will be deleted as well. JWT needed in the request header.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     method: DELETE
+        ///     route:  /Account/Delete
+        ///     body:   none
+        ///     additional header:
+        ///             key: authorization,
+        ///             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZmI4N2Q0Zi0wNGZkLTQwNGUtOTUzZC1hODJmYjU4NjNmMGQiLCJqdGkiOiIxOTViNGM4Ni02M2JmLTQ4YzgtYTkyOC01ZjRjNjRjZmQ4Y2EiLCJleHAiOjE1ODc0ODg1MDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VnZcQD04z0nRlHOwtCtiBXheQGcO80BLYtKOYewZ4Mo
+        /// </remarks>
+        /// <param></param>
+        /// <returns>Message after deletion.</returns>
+        /// <response code="200">Successful deletion with confirmation message.</response>
         [Authorize]
         [HttpDelete]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
