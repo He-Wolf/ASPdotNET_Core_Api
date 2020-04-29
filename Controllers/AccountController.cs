@@ -65,7 +65,7 @@ namespace WebApiJwt.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
-        [Route("Login")]
+        [Route("Login", Name="Login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
@@ -101,7 +101,7 @@ namespace WebApiJwt.Controllers
         [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
-        [Route("Logout")]
+        [Route("Logout", Name="Logout")]
         public async Task<IActionResult> Logout()
         {
             // Well, What do you want to do here?
@@ -115,7 +115,6 @@ namespace WebApiJwt.Controllers
         
         /// <summary>
         /// Registers a new user with the given user data. After successful registration, JWT is returned.
-        /// Password needs upper and lower case letters, at least a digit and a special character as well.
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -130,16 +129,19 @@ namespace WebApiJwt.Controllers
         ///             "ConfirmPassword": "SomeSecurePassword123!"
         ///             }
         ///     additional header: none
+        ///
+        /// Password needs upper and lower case letters from English alphabet, at least a digit and a special character (-._@+) as well.
+        /// Length must be min. 6 character long.
         /// </remarks>
         /// <param name="model"> User firstname, lastname, email and password (with confirmation).</param>
         /// <returns>JSON web token if registration was successful.</returns>
-        /// <response code="200">Returns JWT after registration.</response>
+        /// <response code="201">Returns JWT after registration.</response>
         /// <response code="400">Returns a message if registration data do not fit the requirements.</response>
         [AllowAnonymous]
         [HttpPost]
-        [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TokenViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
-        [Route("Register")]
+        [Route("Register", Name="Register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -158,7 +160,7 @@ namespace WebApiJwt.Controllers
                     await _signInManager.SignInAsync(user, false);
                     var token = GenerateJwtToken(user);
                     
-                    return Ok(new TokenViewModel(token, "Successful registration", DateTime.Now));
+                    return CreatedAtRoute("Display", null, new TokenViewModel(token, "Successful registration", DateTime.Now));
                 }
             }
             
@@ -186,13 +188,13 @@ namespace WebApiJwt.Controllers
         /// </remarks>
         /// <param name="model"> User firstname, lastname, email and password (with confirmation).</param>
         /// <returns>New, modified user data of the logged-in user.</returns>
-        /// <response code="201">User data after successful modification.</response>
+        /// <response code="200">User data after successful modification.</response>
         /// <response code="400">Returns a message if user data modification was not successful.</response>
         [Authorize]
         [HttpPut]
-        [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
-        [Route("Edit")]
+        [Route("Edit", Name="Edit")]
         public async Task<IActionResult> Edit([FromBody] RegisterViewModel model)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -208,7 +210,7 @@ namespace WebApiJwt.Controllers
 
                 await _userManager.UpdateAsync(CurrentUser);
 
-                return CreatedAtRoute("Display", _mapper.Map<DisplayViewModel>(CurrentUser));
+                return Ok(_mapper.Map<DisplayViewModel>(CurrentUser));
             }
             return BadRequest(new MessageViewModel("Edit failed.", DateTime.Now));
         }
@@ -232,7 +234,7 @@ namespace WebApiJwt.Controllers
         [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
-        [Route("Display")]
+        [Route("Display", Name="Display")]
         public async Task<IActionResult> Display()
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -260,7 +262,7 @@ namespace WebApiJwt.Controllers
         [Authorize]
         [HttpDelete]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
-        [Route("Delete")]
+        [Route("Delete", Name="Delete")]
         public async Task<IActionResult> Delete()
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
