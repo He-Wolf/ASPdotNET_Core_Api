@@ -114,30 +114,30 @@ Thank to every hero on Stackoverflow and Github who helped me with their comment
 
 ## 10. Appendix <a name="appendix"></a>
 ### Useful .NET Core cli commands:
-#### to create a web API
+**to create a web API:**\
 dotnet new webapi
 
-#### to install tools
+**to install tools:**\
 dotnet tool install --global #toolname\
 e.g. dotnet tool install --global dotnet-ef
 
-#### to update tools
+**to update tools:**\
 dotnet tool update --global #toolname\
 e.g. dotnet tool update --global dotnet-ef
 
-#### to install packages
-dotnet add package #packagename
+**to install packages:**\
+dotnet add package #packagename\
 e.g. dotnet add package Swashbuckle.AspNetCore.Newtonsoft
 
-#### to run the API
+**to run the API:**\
 dotnet run
 
-#### to build the API
+**to build the API:**\
 dotnet build
 
-#### code generation
+**code generation:**\
 e.g. dotnet aspnet-codegenerator controller -name TodoItemsController -async -api -m TodoItem -dc TodoContext -outDir Controllers
 
-#### database migration
+**database migration:**\
 dotnet ef migrations add InitialCreate\
 dotnet ef database update
