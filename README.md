@@ -34,8 +34,23 @@ Tooling:
 - Docker for containerization
 
 ## 2. Used SDK version <a name="used-sdk-version"></a>
+.NET Core SDK v3.1.201
 ## 3. Used tools <a name="used-tools"></a>
+- dotnet-ef
+- dotnet-aspnet-codegenerator
 ## 4. Used packages <a name="used-packages"></a>
+- Microsoft.AspNetCore.Authentication.JwtBearer v3.1.3
+- Microsoft.AspNetCore.Identity v2.2.0
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore v3.1.3
+- Microsoft.AspNetCore.Mvc.NewtonsoftJson v3.1.3
+- Microsoft.EntityFrameworkCore.Design v3.1.2
+- Microsoft.EntityFrameworkCore.SQLite v3.1.2
+- Microsoft.EntityFrameworkCore.SqlServer v3.1.2
+- Microsoft.IdentityModel.Tokens v6.5.0
+- Microsoft.VisualStudio.Web.CodeGeneration.Design v3.1.1
+- Swashbuckle.AspNetCore v5.3.3
+- Swashbuckle.AspNetCore.Newtonsoft v5.3.3
+- AutoMapper.Extensions.Microsoft.DependencyInjection v7.0.0
 ## 5. Documentation and Test (Swagger) <a name="documentation-and-test-swagger"></a>
 ## 6. How to run/test the api <a name="how-to-run-test-the-api"></a>
 ### 6.1. Docker <a name="docker"></a>
