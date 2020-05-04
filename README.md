@@ -54,6 +54,7 @@ Tooling:
 - download and install .NET Core SDK version v3.1.201 or greater (latest 3.1)
 - clone or download the content of the repository
 - open a terminal and navigate to the containing folder
+- write "dotnet restore" and press Enter
 - write "dotnet run" and press Enter
 - if no error message in the terminal, open your browser (recommended: latest Chrome, Firefox, Safari, Edge Chromium or Chromium) and open: http://localhost:5000/swagger
 - first register a user account, then log in and after that you can manage your TODO items and account
@@ -72,42 +73,70 @@ This application needs to be extended with exception handling and more response 
 ## 8. Some further development possibilities <a name="some-further-development-possibilities"></a>
 - token refreshing
 - Facebook sign-in
-- Adding roles (admin, user)
+- adding roles (admin, user)
 - OpenID Connect & IdentityServer4
 - SPA frontend (Blazor webassembly)
-- Unit and Integration Tests
+- automated unit and integration tests
 ## 9. Resources <a name="resources"></a>
+There are several online source which I used to create this web app.\
+Including but not limited to:
+- Microsoft:
+	- https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-3.1
+	- https://docs.microsoft.com/en-us/aspnet/core/mvc/overview?view=aspnetcore-3.1
+	- https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-3.1
+	- https://docs.microsoft.com/en-us/ef/core/
+	- https://docs.microsoft.com/en-us/dotnet/csharp/
+- Tutorialspoint:
+	- https://www.tutorialspoint.com/csharp/
+	- https://www.tutorialspoint.com/asp.net_core/
+	- https://www.tutorialspoint.com/asp.net_mvc/index.htm
+	- https://www.tutorialspoint.com/entity_framework/index.htm
+	- https://www.tutorialspoint.com/linq/index.htm
+- TutorialsTeacher:
+	- https://www.tutorialsteacher.com/core
+	- https://www.tutorialsteacher.com/webapi/web-api-tutorials
+	- https://www.tutorialsteacher.com/mvc/asp.net-mvc-tutorials
+	- https://www.tutorialsteacher.com/csharp/csharp-tutorials
+	- https://www.tutorialsteacher.com/linq/linq-tutorials
+	- https://www.entityframeworktutorial.net/efcore/entity-framework-core.aspx
+- JWT:
+	- https://medium.com/@ozgurgul/asp-net-core-2-0-webapi-jwt-authentication-with-identity-mysql-3698eeba6ff8
+	- https://dotnetdetail.net/asp-net-core-3-0-web-api-token-based-authentication-example-using-jwt-in-vs2019/
+	- https://code-maze.com/authentication-aspnetcore-jwt-1/
+	- https://fullstackmark.com/post/19/jwt-authentication-flow-with-refresh-tokens-in-aspnet-core-web-api
+	- https://www.c-sharpcorner.com/article/jwt-json-web-token-authentication-in-asp-net-core/
+	- https://www.c-sharpcorner.com/article/asp-net-core-2-0-bearer-authentication/
+	- https://www.blinkingcaret.com/2017/09/06/secure-web-api-in-asp-net-core/
+	- https://salslab.com/a/jwt-authentication-and-authorisation-in-asp-net-core-web-api
+	- https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
+
+Thank to every hero on Stackoverflow and Github who helped me with their comments! (Not all heroes wear capes.)
+
 ## 10. Appendix <a name="appendix"></a>
-### Useful .NET Core commands:
-#### to create an API
+### Useful .NET Core cli commands:
+#### to create a web API
 dotnet new webapi
 
 #### to install tools
-dotnet tool install --global dotnet-ef\
-dotnet tool install --global dotnet-aspnet-codegenerator
+dotnet tool install --global #toolname\
+e.g. dotnet tool install --global dotnet-ef
 
 #### to update tools
-dotnet tool update --global dotnet-ef
+dotnet tool update --global #toolname\
+e.g. dotnet tool update --global dotnet-ef
 
 #### to install packages
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer\
-dotnet add package Microsoft.EntityFrameworkCore.SQLite\
-dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design\
-dotnet add package Microsoft.EntityFrameworkCore.Design\
-dotnet add package Microsoft.AspNetCore.Identity\
-dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson\
-dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection\
-dotnet add package Swashbuckle.AspNetCore\
-dotnet add package Swashbuckle.AspNetCore.Newtonsoft
+dotnet add package #packagename
+e.g. dotnet add package Swashbuckle.AspNetCore.Newtonsoft
 
 #### to run the API
-sudo dotnet run
+dotnet run
 
 #### to build the API
 dotnet build
 
 #### code generation
-dotnet aspnet-codegenerator controller -name TodoItemsController -async -api -m TodoItem -dc TodoContext -outDir Controllers
+e.g. dotnet aspnet-codegenerator controller -name TodoItemsController -async -api -m TodoItem -dc TodoContext -outDir Controllers
 
 #### database migration
 dotnet ef migrations add InitialCreate\
