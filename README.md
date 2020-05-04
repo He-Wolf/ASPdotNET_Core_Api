@@ -4,10 +4,10 @@
 2. [Used SDK version](#used-sdk-version)
 3. [Used tools](#used-tools)
 4. [Used packages](#used-packages)
-5. [Documentation and Test (Swagger)](#documentation-and-test-swagger)
-6. [How to run/test the api](#how-to-run-test-the-api)\
-	6.1. [Docker](#docker)\
-	6.2. [SDK](#sdk)
+5. [How to run the api](#how-to-run-the-api)\
+	5.1. [Docker](#docker)\
+	5.2. [SDK](#sdk)
+6. [Test and Documentation (Swagger)](#test-and-documentation-swagger)
 7. [Limitations](#limitations)\
     7.1. [Exception/error handling](#exception-error-handling)
 8. [Some Further development possibilities](#some-further-development-possibilities)\
@@ -51,10 +51,10 @@ Tooling:
 - Swashbuckle.AspNetCore v5.3.3
 - Swashbuckle.AspNetCore.Newtonsoft v5.3.3
 - AutoMapper.Extensions.Microsoft.DependencyInjection v7.0.0
-## 5. Documentation and Test (Swagger) <a name="documentation-and-test-swagger"></a>
-## 6. How to run/test the api <a name="how-to-run-test-the-api"></a>
-### 6.1. Docker <a name="docker"></a>
-### 6.2. SDK <a name="sdk"></a>
+## 5. How to run the api <a name="how-to-run-the-api"></a>
+### 5.1. Docker <a name="docker"></a>
+### 5.2. SDK <a name="sdk"></a>
+## 6. Test and Documentation (Swagger) <a name="test-and-documentation-swagger"></a>
 ## 7. Limitations <a name="limitations"></a>
 ### 7.1. Exception/error handling <a name="exception-error-handling"></a>
 ## 8. Some Further development possibilities <a name="some-further-development-possibilities"></a>
