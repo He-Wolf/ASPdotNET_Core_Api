@@ -61,7 +61,7 @@ Tooling:
 - if no error message in the terminal, open your browser (recommended: latest Chrome, Firefox, Safari, Edge Chromium or Chromium) and open: http://localhost:5000/swagger
 - first register a user account, then log in and after that you can manage your TODO items and account
 ## 6. Test and Documentation (Swagger) <a name="test-and-documentation-swagger"></a>
-The documentation of the API was created with OpenAPI/Swagger (Swashbuckle). When you run the app, you can navigate to http://localhost:5000/swagger. On this URL you can read the documentation, and you can also test the API.
+The documentation of the API was created with OpenAPI/Swagger (Swashbuckle). When you run the app, you can navigate to http://localhost:5000/swagger. On this URL you can read the documentation, and you can also test the API (You do not need additional tools such as Curl or Postman).
 
 The app uses JWT authentication. It means that when you registered an account and got the token, you need to click to the "Authorize" button on the top right corner and insert "Bearer #yourtoken".
 (e.g. Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMTUxNWEyZS04MjhlLTQ4MTktYmJkYy1kYTc0NDU0MDFjMzAiLCJqdGkiOiI4MzFiY2ZmZC0xNWMxLTQ5YzEtYWJiMy03NjYyNjU2YzMxYmYiLCJleHAiOjE1ODg2MzExMjQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.qZCnKIzVth7hS6RrDxNXP3w12h-LeZptdV72eJYxsBw)
