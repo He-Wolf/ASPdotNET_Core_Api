@@ -1,4 +1,4 @@
-# TODOtnet - REST API
+# TODOtNET - REST API
 ## Table of Content
 1. [Introduction](#introduction)
 2. [Used SDK version](#used-sdk-version)
@@ -14,10 +14,25 @@
 	8.1. [Unit and Integration Tests](#unit-and-integration-tests)\
 	8.2. [Facebook sign-in](#facebook-sign-in)\
 	8.3. [Adding roles](#adding-roles)
-9. [Appendix](#appendix)
+9. [Resources](#resources)
+10. [Appendix](#appendix)
 
 ## 1. Introduction <a name="introduction"></a>
-ASP.NET Core web api with Entity Core ORM & SQLite database and Identity Core/JWT authentication
+This is a basic ASP.NET Core RESTful web API with CRUD operations and user login/account management. You can register a new user account with your email address, name and password. After successful registration, you can log in and add, edit, remove and track TODO items. You can also edit your account data and delete your account. This app was created for learning purpose, but is might be useful as a starting-point for other projects.
+
+The API uses:
+- JWT for authentication,
+- Entity Core as ORM
+- Identity Core for identity management
+- SQLite for DB management
+- Swashbuckle as Swagger
+
+Tooling:
+- Postman for testing
+- Git Extensions as git gui
+- VSC as text editor
+- Docker for containerization
+
 ## 2. Used SDK version <a name="used-sdk-version"></a>
 ## 3. Used tools <a name="used-tools"></a>
 ## 4. Used packages <a name="used-packages"></a>
@@ -31,7 +46,8 @@ ASP.NET Core web api with Entity Core ORM & SQLite database and Identity Core/JW
 ### 8.1. Unit and Integration Tests <a name="unit-and-integration-tests"></a>
 ### 8.2. Facebook sign-in <a name="facebook-sign-in"></a>
 ### 8.3. Adding roles <a name="adding-roles"></a>
-## 9. Appendix <a name="appendix"></a>
+## 9. Resources <a name="resources"></a>
+## 10. Appendix <a name="appendix"></a>
 ### Useful .NET Core commands:
 #### to create an api
 dotnet new webapi
