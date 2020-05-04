@@ -5,14 +5,14 @@
 3. [Used tools](#used-tools)
 4. [Used packages](#used-packages)
 5. [Documentation and Test (Swagger)](#documentation-and-test-swagger)
-6. [How to run/test the api](#how-to-run-test-the-api)
-	6.1. [Docker](#docker)
+6. [How to run/test the api](#how-to-run-test-the-api)\
+	6.1. [Docker](#docker)\
 	6.2. [SDK](#sdk)
-7. [Limitations](#limitations)
+7. [Limitations](#limitations)\
     7.1. [Exception/error handling](#exception-error-handling)
-8. [Some Further development possibilities](#some-further-development-possibilities)
-	8.1. [Unit and Integration Tests](#unit-and-integration-tests)
-	8.2. [Facebook sign-in](#facebook-sign-in)
+8. [Some Further development possibilities](#some-further-development-possibilities)\
+	8.1. [Unit and Integration Tests](#unit-and-integration-tests)\
+	8.2. [Facebook sign-in](#facebook-sign-in)\
 	8.3. [Adding roles](#adding-roles)
 9. [Appendix](#appendix)
 
