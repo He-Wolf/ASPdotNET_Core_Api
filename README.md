@@ -29,7 +29,9 @@ Tooling:
 - Git Extensions as git gui
 - VSC as text editor
 - Docker for containerization
-- WIndows 10 as OS
+- Windows 10 as OS
+
+If any question, please do not hesitate to contact me.
 
 ## 2. Used SDK version <a name="used-sdk-version"></a>
 .NET Core SDK v3.1.201
