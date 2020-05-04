@@ -31,7 +31,7 @@ ASP.NET Core web api with Entity Core ORM & SQLite database and Identity Core/JW
 ### 8.1. Unit and Integration Tests <a name="unit-and-integration-tests"></a>
 ### 8.2. Facebook sign-in <a name="facebook-sign-in"></a>
 ### 8.3. Adding roles <a name="adding-roles"></a>
-## 9. Appendix
+## 9. Appendix <a name="appendix"></a>
 ### Useful .NET Core commands:
 #### to create an api
 dotnet new webapi
