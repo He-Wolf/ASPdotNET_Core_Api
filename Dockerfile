@@ -24,6 +24,8 @@ ENTRYPOINT ["dotnet", "web_api.dll"]
 
 #docker build -t todowebapi:v1 .
 #docker run -it --rm -p 5000:5000 todowebapi:v1
+#docker ps
+#docker stop <container ID>
 
 #If you use Windows Docker, dotnet restore might not work because of network issues.
 #Docker for Windows uses the network adapter with the lowest Interface metric value.
