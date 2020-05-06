@@ -65,7 +65,7 @@ If any question, please do not hesitate to contact me.
 - open a terminal and navigate to the containing folder
 - write "dotnet restore" and press Enter
 - write "dotnet run" and press Enter
-## 5.3. Test and stop <a name="test-and-stop"></a>
+### 5.3. Test and stop <a name="test-and-stop"></a>
 - if no error message in the terminal, open your browser (recommended: latest Chrome, Firefox, Safari, Edge Chromium or Chromium) and open: http://localhost:5000/swagger
 - first register a user account, then log in and after that you can manage your TODO items and account
 - after testing go back to the terminal and press "Ctrl+C" to stop the web server
