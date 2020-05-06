@@ -5,8 +5,9 @@
 3. [Used tools](#used-tools)
 4. [Used packages](#used-packages)
 5. [How to run the API](#how-to-run-the-api)\
-	5.1. [Docker](#docker)\
-	5.2. [SDK](#sdk)
+	5.1. [Build and run with Docker](#build-and-run-with-docker)\
+	5.2. [Build and run with SDK](#build-and-run-with-sdk)\
+	5.3. [Test and stop](#test-and-stop)
 6. [Test and Documentation (Swagger)](#test-and-documentation-swagger)
 7. [Limitations](#limitations)\
     7.1. [Exception/error handling](#exception-error-handling)
@@ -52,15 +53,22 @@ If any question, please do not hesitate to contact me.
 - Swashbuckle.AspNetCore.Newtonsoft v5.3.3
 - AutoMapper.Extensions.Microsoft.DependencyInjection v7.0.0
 ## 5. How to run the API <a name="how-to-run-the-api"></a>
-### 5.1. Docker <a name="docker"></a>
-### 5.2. SDK <a name="sdk"></a>
+### 5.1. Build and run with Docker <a name="build-and-run-with-docker"></a>
+- download and install Docker
+- clone or download the content of the repository
+- open a terminal and navigate to the containing folder
+- write "docker build -t todowebapi:v1 ." and press Enter
+- write "docker run -it --rm -p 5000:5000 todowebapi:v1" and press Enter
+### 5.2. Build and run with SDK <a name="build-and-run-with-sdk"></a>
 - download and install .NET Core SDK version v3.1.201 or greater (latest 3.1)
 - clone or download the content of the repository
 - open a terminal and navigate to the containing folder
 - write "dotnet restore" and press Enter
 - write "dotnet run" and press Enter
+## 5.3. Test and stop <a name="test-and-stop"></a>
 - if no error message in the terminal, open your browser (recommended: latest Chrome, Firefox, Safari, Edge Chromium or Chromium) and open: http://localhost:5000/swagger
 - first register a user account, then log in and after that you can manage your TODO items and account
+- after testing go back to the terminal and press "Ctrl+C" to stop the web server
 ## 6. Test and Documentation (Swagger) <a name="test-and-documentation-swagger"></a>
 The documentation of the API was created with OpenAPI/Swagger (Swashbuckle). When you run the app, you can navigate to http://localhost:5000/swagger. On this URL you can read the documentation, and you can also test the API. (You do not need additional tools such as Curl or Postman.)
 
