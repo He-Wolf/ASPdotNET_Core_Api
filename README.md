@@ -64,7 +64,7 @@ If any question, please do not hesitate to contact me.
 ## 6. Test and Documentation (Swagger) <a name="test-and-documentation-swagger"></a>
 The documentation of the API was created with OpenAPI/Swagger (Swashbuckle). When you run the app, you can navigate to http://localhost:5000/swagger. On this URL you can read the documentation, and you can also test the API. (You do not need additional tools such as Curl or Postman.)
 
-The app uses JWT authentication. It means that when you registered an account and got the token, you need to click to the "Authorize" button on the top right corner and insert "Bearer #yourtoken".
+The app uses JWT authentication. It means that when you registered an account and got the token, you need to click to the "Authorize" button on the top right corner and insert "Bearer \<yourtoken\>".
 (e.g. Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMTUxNWEyZS04MjhlLTQ4MTktYmJkYy1kYTc0NDU0MDFjMzAiLCJqdGkiOiI4MzFiY2ZmZC0xNWMxLTQ5YzEtYWJiMy03NjYyNjU2YzMxYmYiLCJleHAiOjE1ODg2MzExMjQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.qZCnKIzVth7hS6RrDxNXP3w12h-LeZptdV72eJYxsBw)
 
 !Do not forget to put "Bearer" before your token!
@@ -121,15 +121,15 @@ Thank to every hero on Stackoverflow and Github who helped me with their comment
 dotnet new webapi
 
 **to install tools:**\
-dotnet tool install --global #toolname\
+dotnet tool install --global \<toolname\>\
 e.g. dotnet tool install --global dotnet-ef
 
 **to update tools:**\
-dotnet tool update --global #toolname\
+dotnet tool update --global \<toolname\>\
 e.g. dotnet tool update --global dotnet-ef
 
 **to install packages:**\
-dotnet add package #packagename\
+dotnet add package \<packagename\>\
 e.g. dotnet add package Swashbuckle.AspNetCore.Newtonsoft
 
 **to run the API:**\
