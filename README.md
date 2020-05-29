@@ -13,7 +13,6 @@
     7.1. [Exception/error handling](#exception-error-handling)
 8. [Some further development possibilities](#some-further-development-possibilities)
 9. [Resources](#resources)
-10. [Appendix](#appendix)
 
 ## 1. Introduction <a name="introduction"></a>
 This is a basic ASP.NET Core RESTful web API with CRUD operations and user login/account management. You can register a new user account with your email address, name and password. After successful registration, you can log in and add, edit, remove and track TODO items. You can also edit your account data and delete your account. This app was created for learning purpose, but is might be useful as a starting-point for other projects.
@@ -122,33 +121,3 @@ Including but not limited to:
 	- https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
 
 Thank to every hero on Stackoverflow and Github who helped me with their comments! (Not all heroes wear capes.)
-
-## 10. Appendix <a name="appendix"></a>
-### Useful .NET Core cli commands:
-**to create a web API:**\
-dotnet new webapi
-
-**to install tools:**\
-dotnet tool install --global \<toolname\>\
-e.g. dotnet tool install --global dotnet-ef
-
-**to update tools:**\
-dotnet tool update --global \<toolname\>\
-e.g. dotnet tool update --global dotnet-ef
-
-**to install packages:**\
-dotnet add package \<packagename\>\
-e.g. dotnet add package Swashbuckle.AspNetCore.Newtonsoft
-
-**to run the API:**\
-dotnet run
-
-**to build the API:**\
-dotnet build
-
-**code generation:**\
-e.g. dotnet aspnet-codegenerator controller -name TodoItemsController -async -api -m TodoItem -dc TodoContext -outDir Controllers
-
-**database migration:**\
-dotnet ef migrations add InitialCreate\
-dotnet ef database update
